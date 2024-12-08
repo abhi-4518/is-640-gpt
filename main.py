@@ -16,8 +16,7 @@ if __name__ == "__main__":
     n_layer = 6
     dropout = 0.2
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    # load data
+     # load data
     data_obj = Data(file_path='input.txt', device=device, block_size=block_size)
 
     # create model

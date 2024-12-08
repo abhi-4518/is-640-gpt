@@ -1,4 +1,3 @@
-"""
 import torch
 
 class Trainer:
@@ -45,38 +44,3 @@ class Trainer:
         # final loss value after training
         final_losses = self.estimate_loss()
         print(f"Final train loss {final_losses['train']:.4f}, val loss {final_losses['val']:.4f}")
-"""
-import torch
-import torch.nn as nn
-
-class Trainer:
-    def __init__(self, data, model):
-        self.data = data
-        self.model = model
-
-    def train(self, iterations):
-        criterion = nn.CrossEntropyLoss()
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
-
-        for _ in range(iterations):
-            # get a small sequence of data
-            # Suppose we take the first 11 characters as a single batch (batch_size=1, seq_len=11)
-            batch = self.data.data[:11].unsqueeze(0)  # shape [1, 11]
-
-            # input to model is everything except last token
-            input_tokens = batch[:, :-1]  # shape [1, 10]
-            # target is the next token for each input token
-            target_tokens = batch[:, 1:]  # shape [1, 10]
-
-            output = self.model(input_tokens)  # shape [1, 10, vocab_size]
-
-            # reshape for CrossEntropyLoss
-            B, T, V = output.shape
-            output = output.reshape(B*T, V)
-            target_tokens = target_tokens.reshape(B*T)
-
-            loss = criterion(output, target_tokens)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()

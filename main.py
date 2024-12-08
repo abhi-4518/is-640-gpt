@@ -5,18 +5,19 @@ from trainer import Trainer
 
 if __name__ == "__main__":
     # hyperparameters
-    batch_size = 16
+    batch_size = 32 # Increasing batch size for faster training
     block_size = 8
-    max_iters = 100
-    eval_interval = 20
+    max_iters = 5000    # number of training iterations increased for better performance
+    eval_interval = 500
     eval_iters = 200
-    learning_rate = 1e-3
-    n_embd = 32
+    learning_rate = 3e-4    # learning rate increased for loss reduction
+    n_embd = 384    # embedding dimension increased for better performance
     n_head = 6
-    n_layer = 4
+    n_layer = 6
     dropout = 0.2
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-     # load data
+
+    # load data
     data_obj = Data(file_path='input.txt', device=device, block_size=block_size)
 
     # create model
@@ -36,6 +37,5 @@ if __name__ == "__main__":
 
     # generate text
     context = torch.zeros((1, 1), dtype=torch.long, device=device)
-    #generated_ids = model.generate(context, max_new_tokens=100)
-    generated = model.generate(context, WORD_COUNT)[0].tolist()
+    generated_ids = model.generate(context, max_new_tokens=100)
     print(data_obj.decode(generated_ids[0].tolist()))

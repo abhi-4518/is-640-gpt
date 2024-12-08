@@ -1,9 +1,9 @@
-"""import torch
+import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
 class Head(nn.Module):
-    # one head of self-attention 
+    """ one head of self-attention """
     def __init__(self, n_embd, head_size, block_size, dropout=0.2):
         super().__init__()
         self.key = nn.Linear(n_embd, head_size, bias=False)
@@ -26,7 +26,7 @@ class Head(nn.Module):
         return out
 
 class MultiHeadAttention(nn.Module):
-    #multiple heads added of self-attention in parallel 
+    """ multiple heads of self-attention in parallel """
     def __init__(self, n_embd, n_head, block_size, dropout=0.2):
         super().__init__()
         head_size = n_embd // n_head
@@ -40,11 +40,11 @@ class MultiHeadAttention(nn.Module):
         return out
 
 class FeedForward(nn.Module):
-    a simple linear layer followed by a non-linearity 
+    """ a simple linear layer followed by a non-linearity """
     def __init__(self, n_embd, dropout=0.2):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(n_embd, 4 *n_embd),
+            nn.Linear(n_embd, 4 * n_embd),
             nn.ReLU(),
             nn.Linear(4 * n_embd, n_embd),
             nn.Dropout(dropout),
@@ -54,7 +54,7 @@ class FeedForward(nn.Module):
         return self.net(x)
 
 class Block(nn.Module):
-    #Transformer block: communication followed by computation 
+    """ Transformer block: communication followed by computation """
     def __init__(self, n_embd, n_head, block_size, dropout=0.2):
         super().__init__()
         self.sa = MultiHeadAttention(n_embd, n_head, block_size, dropout=dropout)
@@ -77,7 +77,6 @@ class GPTLanguageModel(nn.Module):
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head, block_size=block_size, dropout=dropout) for _ in range(n_layer)])
-        self.feed_forward = FeedForward(n_embd, dropout=dropout)
         self.ln_f = nn.LayerNorm(n_embd) # final layer norm
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
@@ -121,31 +120,3 @@ class GPTLanguageModel(nn.Module):
             idx_next = torch.multinomial(probs, num_samples=1) # (B,1)
             idx = torch.cat((idx, idx_next), dim=1) # (B,T+1)
         return idx
-"""
-
-import torch
-import torch.nn as nn
-from torch.nn import functional as F
-
-class GPTLanguageModel(nn.Module):
-    def __init__(self, vocab_size):
-        super().__init__()
-        self.vocab_size = vocab_size
-        self.embedding = nn.Embedding(vocab_size, 128)
-        self.fc = nn.Linear(128, vocab_size)
-
-    def forward(self, x):
-        # x: [B, T]
-        x = self.embedding(x)       # [B, T, 128]
-        x = self.fc(x)              # [B, T, vocab_size]
-        return x
-
-    def generate(self, context, word_count):
-        # context: [B, T]
-        for _ in range(word_count):
-            logits = self.forward(context)      # [B, T, vocab_size]
-            logits = logits[:, -1, :]           # take the last time step: [B, vocab_size]
-            probs = F.softmax(logits, dim=-1)   # [B, vocab_size]
-            next_token = torch.multinomial(probs, num_samples=1) # [B, 1]
-            context = torch.cat([context, next_token], dim=1)     # append predicted token
-        return context

@@ -36,5 +36,6 @@ if __name__ == "__main__":
 
     # generate text
     context = torch.zeros((1, 1), dtype=torch.long, device=device)
-    generated_ids = model.generate(context, max_new_tokens=100)
+    #generated_ids = model.generate(context, max_new_tokens=100)
+    generated = model.generate(context, WORD_COUNT)[0].tolist()
     print(data_obj.decode(generated_ids[0].tolist()))

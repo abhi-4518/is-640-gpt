@@ -1,3 +1,5 @@
+
+"""
 import torch
 
 class Data:
@@ -31,3 +33,22 @@ class Data:
         y = torch.stack([data[i+1:i+self.block_size+1] for i in ix])
         x, y = x.to(self.device), y.to(self.device)
         return x, y
+"""
+import torch
+import torch.nn as nn
+
+class Data:
+    def __init__(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            self.text = f.read()
+
+        # create character-level encoding
+        self.chars = sorted(list(set(self.text)))
+        self.vocab_size = len(self.chars)
+        self.stoi = { ch:i for i,ch in enumerate(self.chars) }
+        self.itos = { i:ch for i,ch in enumerate(self.chars) }
+        
+        self.encode = lambda s: [self.stoi[c] for c in s]
+        self.decode = lambda l: ''.join([self.itos[i] for i in l])
+
+        self.data = torch.tensor(self.encode(self.text), dtype=torch.long)

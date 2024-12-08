@@ -26,7 +26,7 @@ class Head(nn.Module):
         return out
 
 class MultiHeadAttention(nn.Module):
-    """ multiple heads of self-attention in parallel """
+    """ multiple heads added of self-attention in parallel """
     def __init__(self, n_embd, n_head, block_size, dropout=0.2):
         super().__init__()
         head_size = n_embd // n_head

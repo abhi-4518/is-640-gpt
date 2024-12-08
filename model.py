@@ -44,9 +44,9 @@ class FeedForward(nn.Module):
     def __init__(self, n_embd, dropout=0.2):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(n_embd,n_embd),
+            nn.Linear(n_embd, 4 *n_embd),
             nn.ReLU(),
-            nn.Linear(n_embd, n_embd),
+            nn.Linear(4 * n_embd, n_embd),
             nn.Dropout(dropout),
         )
 
@@ -77,6 +77,7 @@ class GPTLanguageModel(nn.Module):
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head, block_size=block_size, dropout=dropout) for _ in range(n_layer)])
+        self.feed_forward = FeedForward(n_embd, dropout=dropout)
         self.ln_f = nn.LayerNorm(n_embd) # final layer norm
         self.lm_head = nn.Linear(n_embd, vocab_size)
 

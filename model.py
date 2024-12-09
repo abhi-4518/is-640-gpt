@@ -40,7 +40,7 @@ class MultiHeadAttention(nn.Module):
         return out
 
 class FeedForward(nn.Module):
-    """ a simple linear layer followed by a non-linearity """
+    """ a non-linearity applied following a simple linear layer """
     def __init__(self, n_embd, dropout=0.2):
         super().__init__()
         self.net = nn.Sequential(
@@ -54,7 +54,7 @@ class FeedForward(nn.Module):
         return self.net(x)
 
 class Block(nn.Module):
-    """ Transformer block: communication followed by computation """
+    """ Transformer block: exchange of informations followed by calculation """
     def __init__(self, n_embd, n_head, block_size, dropout=0.2):
         super().__init__()
         self.sa = MultiHeadAttention(n_embd, n_head, block_size, dropout=dropout)

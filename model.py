@@ -111,12 +111,21 @@ class GPTLanguageModel(nn.Module):
         return logits, loss
 
     @torch.no_grad()
-    def generate(self, idx, max_new_tokens):
+    def generate(self, idx, max_new_tokens, itos):
+        """Generate text given a context index."""
+        generated_text = []
         for _ in range(max_new_tokens):
+            # Restrict context to the last block_size tokens
             idx_cond = idx[:, -self.block_size:]
             logits, _ = self(idx_cond)
-            logits = logits[:, -1, :] # (B,C)
-            probs = F.softmax(logits, dim=-1) # (B,C)
-            idx_next = torch.multinomial(probs, num_samples=1) # (B,1)
-            idx = torch.cat((idx, idx_next), dim=1) # (B,T+1)
-        return idx
+            logits = logits[:, -1, :]  # Get the last token's logits
+            probs = F.softmax(logits, dim=-1)  # Convert logits to probabilities
+            idx_next = torch.multinomial(probs, num_samples=1)  # Sample next token
+            idx = torch.cat((idx, idx_next), dim=1)  # Append new token
+
+            # Decode word and append to the generated text
+            generated_text.append(itos[idx_next.item()])
+            if len(generated_text) >= max_new_tokens:  # Stop at word count
+                break
+        return ' '.join(generated_text)
+

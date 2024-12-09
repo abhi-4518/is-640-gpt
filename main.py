@@ -7,11 +7,11 @@ if __name__ == "__main__":
     # hyperparameters
     batch_size = 32 # Increasing batch size for faster training
     block_size = 8
-    max_iters = 5000    # number of training iterations increased for better performance
-    eval_interval = 500
+    max_iters = 100    # number of training iterations increased for better performance
+    eval_interval = 10
     eval_iters = 200
-    learning_rate = 3e-4    # learning rate increased for loss reduction
-    n_embd = 384    # embedding dimension increased for better performance
+    learning_rate = 1e-4    # learning rate increased for loss reduction
+    n_embd = 12    # embedding dimension increased for better performance
     n_head = 6
     n_layer = 6
     dropout = 0.2
@@ -37,5 +37,5 @@ if __name__ == "__main__":
 
     # generate text
     context = torch.zeros((1, 1), dtype=torch.long, device=device)
-    generated_ids = model.generate(context, max_new_tokens=100)
-    print(data_obj.decode(generated_ids[0].tolist()))
+    generated = model.generate(context, max_new_tokens=100, itos=data_obj.itos)
+    print(generated)

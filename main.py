@@ -3,7 +3,7 @@ from data import Data
 from model import GPTLanguageModel
 from trainer import Trainer
 
-# Hyperparameters
+# Define Key Hyperparameters
 batch_size = 64
 block_size = 256
 max_iters = 5000
@@ -15,7 +15,7 @@ n_layer = 6
 dropout = 0.2
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-# Load data
+# Load Data loading and Splitting
 data = Data('input.txt')
 train_data, val_data = data.get_splits()
 

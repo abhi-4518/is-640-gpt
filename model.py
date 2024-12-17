@@ -22,7 +22,7 @@ class Head(nn.Module):
         v = self.value(x)
         out = wei @ v
         return out
-
+# Implemented multi head attention
 class MultiHeadAttention(nn.Module):
     def __init__(self, num_heads, head_size, n_embd, block_size, dropout):
         super().__init__()
